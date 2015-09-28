@@ -1,0 +1,5 @@
+All files ending in ".cs" are Licensed under Brad Petry, All Rights Reserved, unless otherwise specified in the file itself.
+An unlimited use license is granted to Derrick Wierzbicki for use of sale or distribution for the current and previous versions of all ".cs" files.
+All images contained within the project are Copyright Derrick Wierzbicki 2015.
+
+All other original Unity files are Licensed under Derrick Wierzbicki, All Rights Reserved, upon reciept of payment as-per agreement.
