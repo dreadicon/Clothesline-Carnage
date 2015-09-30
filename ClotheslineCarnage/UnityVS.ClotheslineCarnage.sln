@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityVS.ClotheslineCarnage.CSharp.Plugins", "UnityVS.ClotheslineCarnage.CSharp.Plugins.csproj", "{3F3617BF-76CB-0CBE-E7BA-7E0B9A00D283}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityVS.ClotheslineCarnage.CSharp", "UnityVS.ClotheslineCarnage.CSharp.csproj", "{9EADFEC2-EDF8-1B03-D61A-5F79987722B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityVS.ClotheslineCarnage.CSharp.Editor", "UnityVS.ClotheslineCarnage.CSharp.Editor.csproj", "{D389944B-7B31-5FA4-EFAB-D52BD36FD086}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3F3617BF-76CB-0CBE-E7BA-7E0B9A00D283}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F3617BF-76CB-0CBE-E7BA-7E0B9A00D283}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F3617BF-76CB-0CBE-E7BA-7E0B9A00D283}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F3617BF-76CB-0CBE-E7BA-7E0B9A00D283}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EADFEC2-EDF8-1B03-D61A-5F79987722B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EADFEC2-EDF8-1B03-D61A-5F79987722B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EADFEC2-EDF8-1B03-D61A-5F79987722B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EADFEC2-EDF8-1B03-D61A-5F79987722B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D389944B-7B31-5FA4-EFAB-D52BD36FD086}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D389944B-7B31-5FA4-EFAB-D52BD36FD086}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D389944B-7B31-5FA4-EFAB-D52BD36FD086}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D389944B-7B31-5FA4-EFAB-D52BD36FD086}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
