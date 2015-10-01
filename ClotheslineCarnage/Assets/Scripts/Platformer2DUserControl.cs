@@ -9,8 +9,7 @@ namespace ClotheslineCarnage
     {
         private PlatformerCharacter2D m_Character;
         private bool m_Jump;
-
-
+        private bool attack;
 
         private void Awake()
         {
@@ -20,10 +19,14 @@ namespace ClotheslineCarnage
 
         private void Update()
         {
+            // Read the jump/attack input in Update so button presses aren't missed.
             if (!m_Jump)
             {
-                // Read the jump input in Update so button presses aren't missed.
                 m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
+            }
+            if(!attack)
+            {
+                attack = CrossPlatformInputManager.GetButtonUp("Attack");
             }
         }
 
@@ -31,15 +34,17 @@ namespace ClotheslineCarnage
         private void FixedUpdate()
         {
             // Read the inputs.
-            if(CrossPlatformInputManager.GetButtonUp("Attack"))
+            if(attack)
             {
                 m_Character.Attack();
+                attack = false;
             }
-            else if(CrossPlatformInputManager.GetButtonDown("Attack"))
+            else if(CrossPlatformInputManager.GetButton("Attack"))
             {
                 m_Character.Charge();
+                
             }
-            float h = CrossPlatformInputManager.GetAxis("Horizontal");
+            float h = CrossPlatformInputManager.GetAxisRaw("Horizontal");
             // Pass all parameters to the character control script.
             m_Character.Move(h, m_Jump);
             m_Jump = false;

@@ -3,150 +3,115 @@
 */
 
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ClotheslineCarnage
 {
-    public enum AttackTypes
-    {
-        Charging,
-        Normal,
-        Strong
-    }
+
 
     public class PlatformerCharacter2D : GameEntity
     {
-        [SerializeField] private float m_MaxSpeed = 8f;                    // The fastest the player can travel in the x axis.
-        [SerializeField] private float m_JumpForce = 200f;                  // Amount of force added when the player jumps.
-        [SerializeField] private bool m_AirControl = false;                 // Whether or not a player can steer while jumping;
-        [SerializeField] private LayerMask m_WhatIsGround;                  // A mask determining what is ground to the character
-        [SerializeField]
-        private float heavyAttackChargeTime = 10;
-        [SerializeField]
-        private float maxJumpTime = 3;
-        [SerializeField]
-        private float speed = 16;
-
-        private ParticleSystem normal;
-
+        [SerializeField] private float maxSpeed = 8f;
+        private float jumpForce = 200f;
+        [SerializeField] private bool airControl = true;
         
+        
+        private float heavyAttackChargeTime = 60;
+        //[SerializeField] private float maxJumpTime = 3;
+        private float speed = 16;
+        [SerializeField] private float globalAttackCooldown = 40;
 
-        private float jumpTime = 0;
+        private Dictionary<AttackType, AttackPrototype> attackEffects = new Dictionary<AttackType, AttackPrototype>();
+        //private float jumpTime = 0;
         private float chargeTime = 0;
-        private Transform m_GroundCheck;    // A position marking where to check if the player is grounded.
-        const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
-        private bool m_Grounded;            // Whether or not the player is grounded.
-        private Rigidbody2D m_Rigidbody2D;
-        private bool m_FacingRight = true;  // For determining which way the player is currently facing.
+        private float cooldown = 0;
+        
+        const float groundedRadius = .2f;
+        private bool facingRight = true; //False means character is facing left
 
         protected override void Awake()
         {
             base.Awake();
             // Setting up references.
-            m_GroundCheck = transform.Find("GroundCheck");
-            m_Rigidbody2D = GetComponent<Rigidbody2D>();
-            normal = transform.Find("NormalAttack").GetComponent<ParticleSystem>();
+            attackEffects[AttackType.Normal] = transform.Find("NormalAttack").GetComponent<ShockwaveAttack>();
+            attackEffects[AttackType.Heavy] = transform.Find("HeavyAttack").GetComponent<ShockwaveAttack>();
         }
 
+        protected void Start()
+        {
+            speed = LevelManager.Instance.playerSpeed;
+            Elasticity = LevelManager.Instance.playerElasticity;
+            jumpForce = LevelManager.Instance.playerJumpForce;
+            heavyAttackChargeTime = LevelManager.Instance.heavyAttackChargeTime;
+        }
 
         private void FixedUpdate()
         {
-            m_Grounded = false;
-
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, m_WhatIsGround);
-            for (int i = 0; i < colliders.Length; i++)
-            {
-                if (colliders[i].gameObject != gameObject)
-                    m_Grounded = true;
-            }
-
+            if (cooldown > 0) cooldown--;
         }
-
-
 
         public void Charge()
         {
-            chargeTime += Time.deltaTime;
+            chargeTime += 1;
         }
 
         public void Attack()
         {
-            if(chargeTime < heavyAttackChargeTime)
+            if(cooldown <= 0)
             {
-                normal.Stop();
-                normal.Play();
+                if (chargeTime < heavyAttackChargeTime)
+                {
+                    attackEffects[AttackType.Normal].Attack();
+                    Debug.Log("Normal Attack. Charge time: " + chargeTime.ToString());
+
+                }
+                else
+                {
+                    attackEffects[AttackType.Heavy].Attack();
+                    Debug.Log("Heavy Attack");
+                }
+                cooldown = globalAttackCooldown;
             }
-            else
-            {
-                normal.Stop();
-                normal.Play();
-            }
+                
             chargeTime = 0;
-            Debug.Log("Attack up");
         }
-
-
 
         public void Move(float move, bool jump)
         {
             //only control the player if grounded or airControl is turned on
-            if (true)
+            if (airControl)
             {
-
-                // The Speed animator parameter is set to the absolute value of the horizontal input.
-                //m_Anim.SetFloat("Speed", Mathf.Abs(move));
-                /*
-                Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 0.1f);
-                for (int i = 0; i < colliders.Length; i++)
-                {
-                    if (colliders[i].gameObject != gameObject && colliders[i].CompareTag(tag))
-                    {
-                        if (colliders[i].transform.position.x > transform.position.x)
-                        {
-                            if (move > 0) return;
-                        }
-                        else if (move < 0) return; 
-                        //TODO: add case for jumping
-                    }
-                        
-                }
-                */
 
                 // Move the character
-                    if (move < 0 && m_Rigidbody2D.velocity.x > -m_MaxSpeed)
-                            m_Rigidbody2D.AddForce(new Vector2(-speed, 0));
-                    else if (move > 0 && m_Rigidbody2D.velocity.x < m_MaxSpeed)
-                        m_Rigidbody2D.AddForce(new Vector2(speed, 0));
-                    if(colliders.Count > 0)
-                    {
-                        foreach(var collision in colliders)
-                        {
-                            m_Rigidbody2D.AddForce((transform.position - collision.transform.position).normalized * speed);
-                        }
-                    }
-                
-                
+                if (move < 0 && rigidbody_2D.velocity.x > -maxSpeed)
+                        rigidbody_2D.AddForce(new Vector2(-speed, 0));
+                else if (move > 0 && rigidbody_2D.velocity.x < maxSpeed)
+                    rigidbody_2D.AddForce(new Vector2(speed, 0));
 
-                // If the input is moving the player right and the player is facing left...
-                if (move > 0 && !m_FacingRight)
+                if(colliders.Count > 0)
                 {
-                    // ... flip the player.
-                    Flip();
+                    foreach(var collision in colliders)
+                    {
+                        if(Vector3.Distance(transform.position, collision.transform.position) < 0.28)
+                        {
+                            rigidbody_2D.velocity = new Vector2(0, 0);
+                            rigidbody_2D.AddForce((transform.position - collision.gameObject.transform.position).normalized * speed * 2);
+                        }
+
+                    }
                 }
-                    // Otherwise if the input is moving the player left and the player is facing right...
-                else if (move < 0 && m_FacingRight)
-                {
-                    // ... flip the player.
-                    Flip();
-                }
+
+                // Flip player left/right
+                if ((move > 0 && !facingRight) || (move < 0 && facingRight)) Flip();
+
             }
-            // If the player should jump...
-            if (m_Grounded && jump)
+
+            // Handle jump
+            //WARNING: this could theoretically be exploited to double-jump. added max speed check as fix, but could still be scenarios where this becomes a problem.
+            if (jump && Physics2D.OverlapCircle(transform.position, groundedRadius, LevelManager.GroundMask) != null && rigidbody_2D.velocity.y < maxSpeed)
             {
-                // Add a vertical force to the player.
-                m_Grounded = false;
-                //m_Anim.SetBool("Ground", false);
-                m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
+                rigidbody_2D.AddForce(new Vector2(0f, jumpForce));
             }
         }
 
@@ -154,7 +119,7 @@ namespace ClotheslineCarnage
         private void Flip()
         {
             // Switch the way the player is labelled as facing.
-            m_FacingRight = !m_FacingRight;
+            facingRight = !facingRight;
 
             // Multiply the player's x local scale by -1.
             Vector3 theScale = transform.localScale;
