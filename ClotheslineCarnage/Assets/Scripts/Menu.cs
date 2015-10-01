@@ -20,7 +20,7 @@ public class Menu : MonoBehaviour {
 	}
 
 	public void NewGame() {
-		Application.LoadLevel ("Map");
+		Application.LoadLevel ("TestLevelScene");
 		Time.timeScale = 1.0f;
 	}
 	
