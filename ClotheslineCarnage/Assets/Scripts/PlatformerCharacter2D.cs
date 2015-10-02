@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace ClotheslineCarnage
 {
@@ -38,6 +39,11 @@ namespace ClotheslineCarnage
             attackEffects[AttackType.Heavy] = transform.Find("HeavyAttack").GetComponent<ShockwaveAttack>();
         }
 
+        protected void Update()
+        {
+            if (!isLocalPlayer && ((rigidbody_2D.velocity.x > 0 && !facingRight) || (rigidbody_2D.velocity.x < 0 && facingRight))) Flip();
+        }
+
         protected void Start()
         {
             speed = LevelManager.Instance.playerSpeed;
@@ -58,23 +64,34 @@ namespace ClotheslineCarnage
 
         public void Attack()
         {
-            if(cooldown <= 0)
+            if (cooldown <= 0)
             {
-                if (chargeTime < heavyAttackChargeTime)
+                CmdAttack(chargeTime);
+                cooldown = globalAttackCooldown;
+            }
+            chargeTime = 0;
+        }
+
+        [Command]
+        public void CmdAttack(float chargeTimeAmount)
+        {
+                if (chargeTimeAmount < heavyAttackChargeTime)
                 {
                     attackEffects[AttackType.Normal].Attack();
+                attackEffects[AttackType.Normal].RpcAttackVisual();
                     Debug.Log("Normal Attack. Charge time: " + chargeTime.ToString());
 
                 }
                 else
                 {
                     attackEffects[AttackType.Heavy].Attack();
-                    Debug.Log("Heavy Attack");
+                attackEffects[AttackType.Heavy].RpcAttackVisual();
+                Debug.Log("Heavy Attack");
                 }
-                cooldown = globalAttackCooldown;
-            }
                 
-            chargeTime = 0;
+            
+                
+            
         }
 
         public void Move(float move, bool jump)
@@ -114,7 +131,6 @@ namespace ClotheslineCarnage
                 rigidbody_2D.AddForce(new Vector2(0f, jumpForce));
             }
         }
-
 
         private void Flip()
         {

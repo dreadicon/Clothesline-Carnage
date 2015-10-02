@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
 public enum AttackType
@@ -10,8 +11,9 @@ public enum AttackType
     Tagging
 }
 
-public abstract class AttackPrototype : MonoBehaviour
+public abstract class AttackPrototype : NetworkBehaviour
 {
+    public abstract void RpcAttackVisual();
     public abstract void Attack();
 }
 
@@ -36,16 +38,22 @@ public class ShockwaveAttack : AttackPrototype
 
     public override void Attack()
     {
-            pSystem.Emit(1);
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.parent.position, effectiveRadius, (1 << transform.parent.gameObject.layer));
-            for (int i = 0; i < colliders.Length; i++)
-            {
-                if (colliders[i].gameObject != gameObject)
-                {
-                    colliders[i].gameObject.GetComponent<Rigidbody2D>().AddForce((colliders[i].gameObject.transform.position - transform.position).normalized * force);
-                }
-            }
         
+        pSystem.Emit(1);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.parent.position, effectiveRadius, (1 << transform.parent.gameObject.layer));
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            if (colliders[i].gameObject != gameObject)
+            {
+                colliders[i].gameObject.GetComponent<Rigidbody2D>().AddForce((colliders[i].gameObject.transform.position - transform.position).normalized * force);
+            }
+        }
+        
+    }
 
+    [ClientRpc]
+    public override void RpcAttackVisual()
+    {
+            pSystem.Emit(1);
     }
 }
