@@ -15,7 +15,6 @@ namespace ClotheslineCarnage
 
         public float heavyAttackChargeTime = 30;
 
-
         // Use this for initialization
         void Awake()
         {

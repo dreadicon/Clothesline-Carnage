@@ -1,11 +1,12 @@
 using System;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityStandardAssets.CrossPlatformInput;
 
 namespace ClotheslineCarnage
 {
     [RequireComponent(typeof (PlatformerCharacter2D))]
-    public class Platformer2DUserControl : MonoBehaviour
+    public class Platformer2DUserControl : NetworkBehaviour
     {
         private PlatformerCharacter2D m_Character;
         private bool m_Jump;
@@ -19,6 +20,7 @@ namespace ClotheslineCarnage
 
         private void Update()
         {
+            if (!isLocalPlayer) return;
             // Read the jump/attack input in Update so button presses aren't missed.
             if (!m_Jump)
             {
@@ -33,6 +35,8 @@ namespace ClotheslineCarnage
 
         private void FixedUpdate()
         {
+            if (!isLocalPlayer) return;
+
             // Read the inputs.
             if(attack)
             {
