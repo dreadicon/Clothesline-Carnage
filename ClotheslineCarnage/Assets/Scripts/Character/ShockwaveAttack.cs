@@ -13,8 +13,9 @@ public enum AttackType
 
 public abstract class AttackPrototype : NetworkBehaviour
 {
-    public abstract void RpcAttackVisual();
-    public abstract void Attack();
+    public float force = 20; //Force to apply to character
+    public abstract void AttackVisual();
+    public abstract float getRadius();
 }
 
 [RequireComponent(typeof(ParticleSystem))]
@@ -24,7 +25,12 @@ public class ShockwaveAttack : AttackPrototype
     private float animationRadius = 0.5f;
     private float effectiveRadius = 0.5f;
 
-    public float force = 20; //Force to apply to character
+    public override float getRadius()
+    {
+        return effectiveRadius;
+    }
+
+    
     public float radius = 1.3f; //Radius as percent of character size
     
 
@@ -36,10 +42,10 @@ public class ShockwaveAttack : AttackPrototype
         effectiveRadius = radius * playerRadius;
 	}
 
-    public override void Attack()
+    public void Attack()
     {
         
-        pSystem.Emit(1);
+        //pSystem.Emit(1);
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.parent.position, effectiveRadius, (1 << transform.parent.gameObject.layer));
         for (int i = 0; i < colliders.Length; i++)
         {
@@ -51,8 +57,7 @@ public class ShockwaveAttack : AttackPrototype
         
     }
 
-    [ClientRpc]
-    public override void RpcAttackVisual()
+    public override void AttackVisual()
     {
             pSystem.Emit(1);
     }

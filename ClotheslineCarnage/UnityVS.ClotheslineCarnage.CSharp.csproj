@@ -74,16 +74,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\CharacterController2D\CharacterController2D.cs" />
-    <Compile Include="Assets\Scripts\GameEntity.cs" />
+    <Compile Include="Assets\Scripts\Character\GameEntity.cs" />
+    <Compile Include="Assets\Scripts\Character\Platformer2DUserControl.cs" />
+    <Compile Include="Assets\Scripts\Character\PlatformerCharacter2D.cs" />
+    <Compile Include="Assets\Scripts\Character\ShockwaveAttack.cs" />
     <Compile Include="Assets\Scripts\JoinGame.cs" />
     <Compile Include="Assets\Scripts\LevelManager.cs" />
-    <Compile Include="Assets\Scripts\MainMenu.cs" />
-    <Compile Include="Assets\Scripts\Menu.cs" />
-    <Compile Include="Assets\Scripts\PauseMenu.cs" />
-    <Compile Include="Assets\Scripts\Platformer2DUserControl.cs" />
-    <Compile Include="Assets\Scripts\PlatformerCharacter2D.cs" />
-    <Compile Include="Assets\Scripts\ShockwaveAttack.cs" />
+    <Compile Include="Assets\Scripts\UI\MainMenu.cs" />
+    <Compile Include="Assets\Scripts\UI\Menu.cs" />
+    <Compile Include="Assets\Scripts\UI\PauseMenu.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Character\AttackShader.shader" />

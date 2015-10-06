@@ -11,6 +11,7 @@ namespace ClotheslineCarnage
         private PlatformerCharacter2D m_Character;
         private bool m_Jump;
         private bool attack;
+        private bool charge;
 
         private void Awake()
         {
@@ -26,10 +27,17 @@ namespace ClotheslineCarnage
             {
                 m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
             }
-            if(!attack)
+            if (!attack)
             {
                 attack = CrossPlatformInputManager.GetButtonUp("Attack");
             }
+            if (!charge)
+            {
+                charge = CrossPlatformInputManager.GetButtonDown("Attack");
+                if (charge)
+                    m_Character.Charge();
+            }
+                
         }
 
 
@@ -42,11 +50,7 @@ namespace ClotheslineCarnage
             {
                 m_Character.Attack();
                 attack = false;
-            }
-            else if(CrossPlatformInputManager.GetButton("Attack"))
-            {
-                m_Character.Charge();
-                
+                charge = false;
             }
             float h = CrossPlatformInputManager.GetAxisRaw("Horizontal");
             // Pass all parameters to the character control script.

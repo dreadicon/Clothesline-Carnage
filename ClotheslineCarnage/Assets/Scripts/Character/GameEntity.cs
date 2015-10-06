@@ -20,6 +20,8 @@ namespace ClotheslineCarnage
             rigidbody_2D = this.GetComponent<Rigidbody2D>();
         }
 
+
+
         protected virtual void OnTriggerExit2D(Collider2D other)
         {
             if (other.gameObject.tag == "Player" || other.gameObject.tag == "NPC")
