@@ -13,8 +13,10 @@ namespace ClotheslineCarnage
         public float playerSpeed = 10;
         public float playerJumpForce = 200;
 
-        public float heavyAttackChargeTime = 30;
+        public float normalAttackForce = 20;
+        public float heavyAttackForce = 100;
 
+        public float heavyAttackChargeTime = 30;
 
         // Use this for initialization
         void Awake()

@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace ClotheslineCarnage
 {
@@ -22,7 +23,10 @@ namespace ClotheslineCarnage
         private float speed = 16;
         [SerializeField] private float globalAttackCooldown = 40;
 
-        private Dictionary<AttackType, AttackPrototype> attackEffects = new Dictionary<AttackType, AttackPrototype>();
+        [SerializeField]
+        private AttackPrototype normalAttack;
+        [SerializeField]
+        private AttackPrototype heavyAttack;
         //private float jumpTime = 0;
         private float chargeTime = 0;
         private float cooldown = 0;
@@ -33,9 +37,11 @@ namespace ClotheslineCarnage
         protected override void Awake()
         {
             base.Awake();
-            // Setting up references.
-            attackEffects[AttackType.Normal] = transform.Find("NormalAttack").GetComponent<ShockwaveAttack>();
-            attackEffects[AttackType.Heavy] = transform.Find("HeavyAttack").GetComponent<ShockwaveAttack>();
+        }
+
+        protected void Update()
+        {
+            if (!isLocalPlayer && ((rigidbody_2D.velocity.x > 0.01f && !facingRight) || (rigidbody_2D.velocity.x < 0 && facingRight))) Flip();
         }
 
         protected void Start()
@@ -53,28 +59,70 @@ namespace ClotheslineCarnage
 
         public void Charge()
         {
-            chargeTime += 1;
+            CmdCharge();
+        }
+
+        [Command]
+        public void CmdCharge()
+        {
+            chargeTime = Time.timeSinceLevelLoad;
         }
 
         public void Attack()
         {
-            if(cooldown <= 0)
-            {
-                if (chargeTime < heavyAttackChargeTime)
-                {
-                    attackEffects[AttackType.Normal].Attack();
-                    Debug.Log("Normal Attack. Charge time: " + chargeTime.ToString());
+            CmdAttack();
+        }
 
+        [ClientRpc]
+        public void RpcTakeHit(Vector2 force)
+        {
+            rigidbody_2D.AddForce(force);
+        }
+
+        [Command]
+        public void CmdAttack()
+        {
+            if (!isServer) return;
+            if (cooldown <= 0)
+            {
+                if ((Time.timeSinceLevelLoad - chargeTime) < heavyAttackChargeTime)
+                {
+                    Attack(AttackType.Normal, normalAttack.getRadius(), normalAttack.force);
+                    Debug.Log("Normal Attack. Charge time: " + (Time.timeSinceLevelLoad - chargeTime).ToString());
                 }
                 else
                 {
-                    attackEffects[AttackType.Heavy].Attack();
-                    Debug.Log("Heavy Attack");
+                    Attack(AttackType.Heavy, heavyAttack.getRadius(), heavyAttack.force);
+                    Debug.Log("Heavy Attack. Charge time: " + (Time.timeSinceLevelLoad - chargeTime).ToString());
                 }
                 cooldown = globalAttackCooldown;
             }
-                
             chargeTime = 0;
+        }
+
+        private void Attack(AttackType attackType, float radius, float force)
+        {
+            RpcAttackEffect(attackType);
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, radius, (1 << transform.gameObject.layer));
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                if (colliders[i].gameObject != gameObject)
+                {
+                    var characterComponent = colliders[i].gameObject.GetComponent<PlatformerCharacter2D>();
+                    if(characterComponent != null)
+                        characterComponent.RpcTakeHit((colliders[i].gameObject.transform.position - transform.position).normalized * force);
+                }
+            }
+            
+        }
+
+        [ClientRpc]
+        private void RpcAttackEffect(AttackType attackType)
+        {
+            if (attackType == AttackType.Normal)
+                normalAttack.AttackVisual();
+            else if (attackType == AttackType.Heavy)
+                heavyAttack.AttackVisual();
         }
 
         public void Move(float move, bool jump)
@@ -82,7 +130,6 @@ namespace ClotheslineCarnage
             //only control the player if grounded or airControl is turned on
             if (airControl)
             {
-
                 // Move the character
                 if (move < 0 && rigidbody_2D.velocity.x > -maxSpeed)
                         rigidbody_2D.AddForce(new Vector2(-speed, 0));
@@ -108,13 +155,11 @@ namespace ClotheslineCarnage
             }
 
             // Handle jump
-            //WARNING: this could theoretically be exploited to double-jump. added max speed check as fix, but could still be scenarios where this becomes a problem.
             if (jump && Physics2D.OverlapCircle(transform.position, groundedRadius, LevelManager.GroundMask) != null && rigidbody_2D.velocity.y < maxSpeed)
             {
                 rigidbody_2D.AddForce(new Vector2(0f, jumpForce));
             }
         }
-
 
         private void Flip()
         {
