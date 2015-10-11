@@ -78,8 +78,11 @@
     <Compile Include="Assets\Scripts\Character\Platformer2DUserControl.cs" />
     <Compile Include="Assets\Scripts\Character\PlatformerCharacter2D.cs" />
     <Compile Include="Assets\Scripts\Character\ShockwaveAttack.cs" />
+    <Compile Include="Assets\Scripts\GameMode.cs" />
     <Compile Include="Assets\Scripts\JoinGame.cs" />
     <Compile Include="Assets\Scripts\LevelManager.cs" />
+    <Compile Include="Assets\Scripts\SumoMode.cs" />
+    <Compile Include="Assets\Scripts\Teams.cs" />
     <Compile Include="Assets\Scripts\UI\MainMenu.cs" />
     <Compile Include="Assets\Scripts\UI\Menu.cs" />
     <Compile Include="Assets\Scripts\UI\PauseMenu.cs" />

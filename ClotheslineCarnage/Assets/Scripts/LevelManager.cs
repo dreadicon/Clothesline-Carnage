@@ -1,13 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace ClotheslineCarnage
 {
+
     public class LevelManager : MonoBehaviour
     {
         public static int GroundMask = 0;
 
         public static LevelManager Instance = null;
+
+        public GameMode gameMode;
 
         public float playerElasticity = 0.5f;
         public float playerSpeed = 10;
@@ -17,6 +21,10 @@ namespace ClotheslineCarnage
         public float heavyAttackForce = 100;
 
         public float heavyAttackChargeTime = 30;
+
+        public float levelDieBottom = -6;
+        public float levelDieLeft = -10;
+        public float levelDieRight = 10;
 
         // Use this for initialization
         void Awake()
