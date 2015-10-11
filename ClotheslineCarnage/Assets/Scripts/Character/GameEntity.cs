@@ -20,7 +20,10 @@ namespace ClotheslineCarnage
             rigidbody_2D = this.GetComponent<Rigidbody2D>();
         }
 
-
+        public virtual void DieEdge()
+        {
+            
+        }
 
         protected virtual void OnTriggerExit2D(Collider2D other)
         {
