@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 namespace ClotheslineCarnage
 {
+    [Flags]
     public enum Teams
     {
         FFA,

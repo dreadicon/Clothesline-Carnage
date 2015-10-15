@@ -15,6 +15,8 @@ namespace ClotheslineCarnage
 
         protected float Elasticity = 0.4f;
 
+        public int team = 0;
+
         protected virtual void Awake()
         {
             rigidbody_2D = this.GetComponent<Rigidbody2D>();

@@ -11,24 +11,19 @@ namespace ClotheslineCarnage
 
         public override void GameStart()
         {
-            
+            base.GameStart();
         }
 
         public override void GameLoad()
         {
+            base.GameLoad();
             gameTimeRemaining = maxGameTime;
-        }
-
-        // Use this for initialization
-        void Awake()
-        {
-            
         }
 
         // Update is called once per frame
         public override void GameUpdate()
         {
-            gameTimeRemaining -= Time.deltaTime;
+            gameTimeRemaining = maxGameTime - Time.timeSinceLevelLoad;
         }
     }
 }

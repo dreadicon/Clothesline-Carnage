@@ -24,12 +24,12 @@ namespace ClotheslineCarnage
         [SerializeField] private float globalAttackCooldown = 40;
 
         [SerializeField]
-        private AttackPrototype normalAttack;
+        public ParticleEmitter normalAttack;
         [SerializeField]
-        private AttackPrototype heavyAttack;
+        public ParticleEmitter heavyAttack;
         //private float jumpTime = 0;
-        private float chargeTime = 0;
-        private float cooldown = 0;
+        public float chargeTime;
+        public float cooldown = 0;
         
         const float groundedRadius = .2f;
         private bool facingRight = true; //False means character is facing left
@@ -37,29 +37,28 @@ namespace ClotheslineCarnage
         protected override void Awake()
         {
             base.Awake();
+            chargeTime = 0;
         }
 
         protected void Update()
         {
             if (!isLocalPlayer && ((rigidbody_2D.velocity.x > 0.01f && !facingRight) || (rigidbody_2D.velocity.x < 0 && facingRight))) Flip();
+            if (!isServer) return;
+            Singleton<GameMode>.Instance.CharacterUpdate(this);
+
         }
 
         protected void Start()
         {
-            speed = LevelManager.Instance.playerSpeed;
-            Elasticity = LevelManager.Instance.playerElasticity;
-            jumpForce = LevelManager.Instance.playerJumpForce;
-            heavyAttackChargeTime = LevelManager.Instance.heavyAttackChargeTime;
+            speed = Singleton<GameMode>.Instance.playerSpeed;
+            Elasticity = Singleton<GameMode>.Instance.playerElasticity;
+            jumpForce = Singleton<GameMode>.Instance.playerJumpForce;
+            heavyAttackChargeTime = Singleton<GameMode>.Instance.specialAttackChargeTime;
         }
 
         private void FixedUpdate()
         {
             if (cooldown > 0) cooldown--;
-        }
-
-        public void Charge()
-        {
-            CmdCharge();
         }
 
         [Command]
@@ -68,61 +67,26 @@ namespace ClotheslineCarnage
             chargeTime = Time.timeSinceLevelLoad;
         }
 
-        public void Attack()
+        [Command]
+        public void CmdAttack()
         {
-            CmdAttack();
+            if (!isServer) return;
+            Singleton<GameMode>.Instance.CharacterAttack(this);
+        }
+
+        [ClientRpc]
+        private void RpcAttackEffect(bool isNormal)
+        {
+            if (isNormal)
+                normalAttack.AttackVisual();
+            else 
+                heavyAttack.AttackVisual();
         }
 
         [ClientRpc]
         public void RpcTakeHit(Vector2 force)
         {
             rigidbody_2D.AddForce(force);
-        }
-
-        [Command]
-        public void CmdAttack()
-        {
-            if (!isServer) return;
-            if (cooldown <= 0)
-            {
-                if ((Time.timeSinceLevelLoad - chargeTime) < heavyAttackChargeTime)
-                {
-                    Attack(AttackType.Normal, normalAttack.getRadius(), normalAttack.force);
-                    Debug.Log("Normal Attack. Charge time: " + (Time.timeSinceLevelLoad - chargeTime).ToString());
-                }
-                else
-                {
-                    Attack(AttackType.Heavy, heavyAttack.getRadius(), heavyAttack.force);
-                    Debug.Log("Heavy Attack. Charge time: " + (Time.timeSinceLevelLoad - chargeTime).ToString());
-                }
-                cooldown = globalAttackCooldown;
-            }
-            chargeTime = 0;
-        }
-
-        private void Attack(AttackType attackType, float radius, float force)
-        {
-            RpcAttackEffect(attackType);
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, radius, (1 << transform.gameObject.layer));
-            for (int i = 0; i < colliders.Length; i++)
-            {
-                if (colliders[i].gameObject != gameObject)
-                {
-                    var characterComponent = colliders[i].gameObject.GetComponent<PlatformerCharacter2D>();
-                    if(characterComponent != null)
-                        characterComponent.RpcTakeHit((colliders[i].gameObject.transform.position - transform.position).normalized * force);
-                }
-            }
-            
-        }
-
-        [ClientRpc]
-        private void RpcAttackEffect(AttackType attackType)
-        {
-            if (attackType == AttackType.Normal)
-                normalAttack.AttackVisual();
-            else if (attackType == AttackType.Heavy)
-                heavyAttack.AttackVisual();
         }
 
         public void Move(float move, bool jump)

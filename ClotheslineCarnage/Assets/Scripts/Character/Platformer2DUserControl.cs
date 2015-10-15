@@ -35,7 +35,7 @@ namespace ClotheslineCarnage
             {
                 charge = CrossPlatformInputManager.GetButtonDown("Attack");
                 if (charge)
-                    m_Character.Charge();
+                    m_Character.CmdCharge();
             }
                 
         }
@@ -48,7 +48,7 @@ namespace ClotheslineCarnage
             // Read the inputs.
             if(attack)
             {
-                m_Character.Attack();
+                m_Character.CmdAttack();
                 attack = false;
                 charge = false;
             }
