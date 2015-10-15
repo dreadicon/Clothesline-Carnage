@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 
 namespace ClotheslineCarnage
 {
@@ -29,6 +30,7 @@ namespace ClotheslineCarnage
 
         protected virtual void Awake()
         {
+            DontDestroyOnLoad(gameObject.transform);
             if(playerPrefab != null)
             {
                 var radius = playerPrefab.GetComponent<CircleCollider2D>().radius;
@@ -97,18 +99,18 @@ namespace ClotheslineCarnage
 
         public virtual void NormalAttack(PlatformerCharacter2D character)
         {
-            ShockwaveAttack(character.transform.position, normalRangeScaled, character.normalAttack);
+            character.RpcAttackEffect(true);
+            ShockwaveAttack(character.transform.position, normalRangeScaled);
         }
 
         public virtual void SpecialAttack(PlatformerCharacter2D character)
         {
-            ShockwaveAttack(character.transform.position, normalRangeScaled, character.normalAttack);
+            character.RpcAttackEffect(false);
+            ShockwaveAttack(character.transform.position, normalRangeScaled);
         }
 
-        protected virtual void ShockwaveAttack(Vector3 position, float range, ParticleEmitter attack)
+        protected virtual void ShockwaveAttack(Vector3 position, float range)
         {
-            if (!isServer) return;
-            attack.Emit(1);
             Collider2D[] colliders = Physics2D.OverlapCircleAll(position, range, playerLayerMask);
             for (int i = 0; i < colliders.Length; i++)
             {

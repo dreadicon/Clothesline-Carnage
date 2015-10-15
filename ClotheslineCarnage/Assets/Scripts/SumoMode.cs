@@ -9,6 +9,16 @@ namespace ClotheslineCarnage
         public float maxGameTime = 60;
         public float gameTimeRemaining;
 
+        public override string modeName()
+        {
+            return "Sumo Mode";
+        }
+
+        public override string description()
+        {
+            return "A timed match where the player or team with the most opponents KO'ed at the end of the time limit wins!";
+        }
+
         public override void GameStart()
         {
             base.GameStart();

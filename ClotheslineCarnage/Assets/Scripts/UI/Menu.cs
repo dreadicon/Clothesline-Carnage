@@ -1,13 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
 [RequireComponent(typeof(Canvas))]
 public class Menu : MonoBehaviour {
 
 	protected Canvas menuCanvas;
 
+    public NetworkManager manager;
+
 	protected virtual void Awake () {
 		menuCanvas = GetComponent<Canvas> ();
+        manager = FindObjectOfType<NetworkManager>();
 	}
 
 	protected virtual void Start () {
@@ -19,10 +23,7 @@ public class Menu : MonoBehaviour {
 			Back ();
 	}
 
-	public void NewGame() {
-		Application.LoadLevel ("TestLevelScene");
-		Time.timeScale = 1.0f;
-	}
+
 	
 	public void ExitGame() {
 		Application.Quit ();
@@ -39,7 +40,7 @@ public class Menu : MonoBehaviour {
 	}
 
 	public virtual void Back () {
-
+        Hide();
 	}
 
 }

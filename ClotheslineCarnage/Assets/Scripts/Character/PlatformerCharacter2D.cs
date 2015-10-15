@@ -75,12 +75,12 @@ namespace ClotheslineCarnage
         }
 
         [ClientRpc]
-        private void RpcAttackEffect(bool isNormal)
+        public void RpcAttackEffect(bool isNormal)
         {
             if (isNormal)
-                normalAttack.AttackVisual();
+                normalAttack.Emit(1);
             else 
-                heavyAttack.AttackVisual();
+                heavyAttack.Emit(1);
         }
 
         [ClientRpc]

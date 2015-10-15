@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace ClotheslineCarnage
 {
 
-    public class LevelManager : Singleton<LevelManager>
+    public class LevelManager : MonoBehaviour //Singleton<LevelManager>
     {
         public static int GroundMask = 0;
 
