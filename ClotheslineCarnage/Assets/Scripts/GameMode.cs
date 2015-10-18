@@ -9,13 +9,15 @@ namespace ClotheslineCarnage
     {
         public GameObject playerPrefab;
 
+        public static GameMode current;
+
         public Teams teamTypes;
 
         public float playerElasticity = 0.5f;
         public float playerSpeed = 10;
         public float playerJumpForce = 200;
 
-        public float specialAttackChargeTime = 30;
+        public float specialAttackChargeTime = 1.2f;
         public float attackGlobalCooldown = 1;
 
         public float normalForce = 20;
@@ -30,7 +32,7 @@ namespace ClotheslineCarnage
 
         protected virtual void Awake()
         {
-            DontDestroyOnLoad(gameObject.transform);
+            
             if(playerPrefab != null)
             {
                 var radius = playerPrefab.GetComponent<CircleCollider2D>().radius;

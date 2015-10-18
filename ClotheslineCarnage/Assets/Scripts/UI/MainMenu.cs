@@ -8,24 +8,24 @@ namespace ClotheslineCarnage
         [SerializeField]
         protected JoinGame JoinGameMenu;
         [SerializeField]
-        protected HostGame HostGameMenu;
+        protected GameLobby GameLobbyMenu;
 
 
         protected override void Awake()
         {
             base.Awake();
-
+            gameObject.SetActive(true);
         }
 
         public void HostGame()
         {
-            manager.StartHost();
-            Time.timeScale = 1.0f;
-
+            GameLobbyMenu.HostGame();
+            this.Hide();
         }
         public void JoinGame()
         {
-
+            JoinGameMenu.Show();
+            this.Hide();
         }
 
     }

@@ -23,6 +23,12 @@ namespace ClotheslineCarnage
             GroundMask |= (1 << LayerMask.NameToLayer("Ground"));
         }
 
+        void Start()
+        {
+            gameMode = GameMode.current;
+            
+        }
+
         // Update is called once per frame
         void Update()
         {

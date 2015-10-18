@@ -29,16 +29,9 @@ namespace ClotheslineCarnage
         // Use this for initialization
         protected virtual void Start()
         {
-            pSystem = transform.GetComponent<ParticleSystem>();
+            transform.parent.GetComponent<PlatformerCharacter2D>().normalAttack = transform.GetComponent<ParticleSystem>();
             var playerRadius = transform.parent.GetComponent<CircleCollider2D>().radius;
             effectiveRadius = radius * playerRadius;
-        }
-
-
-
-        public void AttackVisual()
-        {
-            pSystem.Emit(1);
         }
     }
 }

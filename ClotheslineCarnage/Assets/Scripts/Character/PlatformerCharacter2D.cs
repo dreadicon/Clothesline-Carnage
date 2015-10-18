@@ -24,9 +24,9 @@ namespace ClotheslineCarnage
         [SerializeField] private float globalAttackCooldown = 40;
 
         [SerializeField]
-        public ParticleEmitter normalAttack;
+        public ParticleSystem normalAttack;
         [SerializeField]
-        public ParticleEmitter heavyAttack;
+        public ParticleSystem heavyAttack;
         //private float jumpTime = 0;
         public float chargeTime;
         public float cooldown = 0;
@@ -38,22 +38,24 @@ namespace ClotheslineCarnage
         {
             base.Awake();
             chargeTime = 0;
+            normalAttack = transform.FindChild("NormalAttack").GetComponent<ParticleSystem>();
+            heavyAttack = transform.FindChild("HeavyAttack").GetComponent<ParticleSystem>();
         }
 
         protected void Update()
         {
             if (!isLocalPlayer && ((rigidbody_2D.velocity.x > 0.01f && !facingRight) || (rigidbody_2D.velocity.x < 0 && facingRight))) Flip();
             if (!isServer) return;
-            Game.gameMode.CharacterUpdate(this);
+            GameMode.current.CharacterUpdate(this);
 
         }
 
         protected void Start()
         {
-            speed = Game.gameMode.playerSpeed;
-            Elasticity = Game.gameMode.playerElasticity;
-            jumpForce = Game.gameMode.playerJumpForce;
-            heavyAttackChargeTime = Game.gameMode.specialAttackChargeTime;
+            speed = GameMode.current.playerSpeed;
+            Elasticity = GameMode.current.playerElasticity;
+            jumpForce = GameMode.current.playerJumpForce;
+            heavyAttackChargeTime = GameMode.current.specialAttackChargeTime;
         }
 
         private void FixedUpdate()
@@ -71,7 +73,7 @@ namespace ClotheslineCarnage
         public void CmdAttack()
         {
             if (!isServer) return;
-            Game.gameMode.CharacterAttack(this);
+            GameMode.current.CharacterAttack(this);
         }
 
         [ClientRpc]
