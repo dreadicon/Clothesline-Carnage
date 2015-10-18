@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 namespace ClotheslineCarnage
 {
-    public abstract class GameMode : Singleton<GameMode>
+    public abstract class GameMode : MonoBehaviour
     {
         public GameObject playerPrefab;
 

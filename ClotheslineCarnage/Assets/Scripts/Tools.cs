@@ -12,7 +12,7 @@ namespace ClotheslineCarnage
 /* The following code was originally written by "Kleber Lopes da Silva", and was found here: http://kleber-swf.com/singleton-monobehaviour-unity-projects/
  * If required I will remove this code at request. It has whatever license the original author has assigned it.
 */
-    public abstract class Singleton<T> : NetworkBehaviour where T : NetworkBehaviour
+    public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
         private static T _instance;
         private static bool _instantiated;

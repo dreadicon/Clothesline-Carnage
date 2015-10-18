@@ -44,16 +44,16 @@ namespace ClotheslineCarnage
         {
             if (!isLocalPlayer && ((rigidbody_2D.velocity.x > 0.01f && !facingRight) || (rigidbody_2D.velocity.x < 0 && facingRight))) Flip();
             if (!isServer) return;
-            Singleton<GameMode>.Instance.CharacterUpdate(this);
+            Game.gameMode.CharacterUpdate(this);
 
         }
 
         protected void Start()
         {
-            speed = Singleton<GameMode>.Instance.playerSpeed;
-            Elasticity = Singleton<GameMode>.Instance.playerElasticity;
-            jumpForce = Singleton<GameMode>.Instance.playerJumpForce;
-            heavyAttackChargeTime = Singleton<GameMode>.Instance.specialAttackChargeTime;
+            speed = Game.gameMode.playerSpeed;
+            Elasticity = Game.gameMode.playerElasticity;
+            jumpForce = Game.gameMode.playerJumpForce;
+            heavyAttackChargeTime = Game.gameMode.specialAttackChargeTime;
         }
 
         private void FixedUpdate()
@@ -71,7 +71,7 @@ namespace ClotheslineCarnage
         public void CmdAttack()
         {
             if (!isServer) return;
-            Singleton<GameMode>.Instance.CharacterAttack(this);
+            Game.gameMode.CharacterAttack(this);
         }
 
         [ClientRpc]

@@ -4,6 +4,7 @@ using System;
 
 namespace ClotheslineCarnage
 {
+    [Prefab("Game Controller", true)]
     public class SumoMode : GameMode
     {
         public float maxGameTime = 60;
